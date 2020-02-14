@@ -34,17 +34,20 @@ app.use(redirectToHTTPS([/localhost:(\d{4})/], [/\/insecure/], 301));
 // CORS
 // ====
 app.use((req, res, next) => {
-  const allowedOrigins = [
-    // "chrome-extension://nallaonplkppkoblffghfkmebdbjlbji"
-    "chrome-extension://mkpomcaaododlneedilihiedcpgknikb"
-  ];
+  // const allowedOrigins = [
+  //   "chrome-extension://nallaonplkppkoblffghfkmebdbjlbji",
+  //   "chrome-extension://mkpomcaaododlneedilihiedcpgknikb"
+  // ];
 
-  allowedOrigins.forEach(origin => {
-    res.header("Access-Control-Allow-Origin", origin);
-  });
+  // allowedOrigins.forEach(origin => {
+  //   res.header("Access-Control-Allow-Origin", origin);
+  // });
 
-  if (app.settings.env !== "production")
-    res.header("Access-Control-Allow-Origin", "*");
+  // if (app.settings.env !== "production")
+  //   res.header("Access-Control-Allow-Origin", "*");
+
+  res.header("Access-Control-Allow-Origin", "*");
+
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header(
     "Access-Control-Allow-Headers",
