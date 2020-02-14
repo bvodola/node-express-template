@@ -33,7 +33,9 @@ app.use(redirectToHTTPS([/localhost:(\d{4})/], [/\/insecure/], 301));
 // CORS
 // ====
 app.use((req, res, next) => {
-  const allowedOrigins = [];
+  const allowedOrigins = [
+    "chrome-extension://nallaonplkppkoblffghfkmebdbjlbji"
+  ];
 
   allowedOrigins.forEach(origin => {
     res.header("Access-Control-Allow-Origin", origin);
