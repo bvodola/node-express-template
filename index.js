@@ -1,5 +1,6 @@
 const express = require("express");
 const http = require("http");
+const https = require("http");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const session = require("cookie-session");
@@ -20,7 +21,7 @@ app.use("/graphql", () => {});
 // Keep Heroku App awake
 // =====================
 setInterval(function() {
-  http.get(env.BACKEND_URL);
+  https.get(env.BACKEND_URL);
 }, 300000);
 
 // ========================
