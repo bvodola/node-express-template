@@ -21,14 +21,18 @@ app.use("/graphql", () => {});
 // Keep Heroku App awake
 // =====================
 setInterval(function() {
-  https.get(env.BACKEND_URL);
+  try {
+    https.get(env.BACKEND_URL);
+  } catch (err) {
+    console.error(err);
+  }
 }, 300000);
 
 // ========================
 // Redir from HTTP to HTTPS
 // ========================
-var redirectToHTTPS = require("express-http-to-https").redirectToHTTPS;
-app.use(redirectToHTTPS([/localhost:(\d{4})/], [/\/insecure/], 301));
+// var redirectToHTTPS = require("express-http-to-https").redirectToHTTPS;
+// app.use(redirectToHTTPS([/localhost:(\d{4})/], [/\/insecure/], 301));
 
 // ====
 // CORS
