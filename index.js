@@ -35,8 +35,8 @@ app.use(redirectToHTTPS([/localhost:(\d{4})/], [/\/insecure/], 301));
 // ====
 app.use((req, res, next) => {
   const allowedOrigins = [
-    "chrome-extension://mkpomcaaododlneedilihiedcpgknikb",
-    "chrome-extension://nallaonplkppkoblffghfkmebdbjlbji"
+    // "chrome-extension://nallaonplkppkoblffghfkmebdbjlbji"
+    "chrome-extension://mkpomcaaododlneedilihiedcpgknikb"
   ];
 
   allowedOrigins.forEach(origin => {
