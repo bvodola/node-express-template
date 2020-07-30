@@ -7,7 +7,10 @@ router.get("/contacts/query", async (req, res) => {
     // Get the query parameter
     const query = req.query.q || null;
 
-    const data = await queryContacts(query);
+    // Get the hubspotToken
+    const { hubspotToken } = res.locals;
+
+    const data = await queryContacts(query, hubspotToken);
 
     // Send data
     res.send(data);
@@ -21,9 +24,11 @@ router.get("/contacts/:contactId/deals", async (req, res) => {
   try {
     // Get the contactId parameter
     const contactId = req.params.contactId || null;
-    console.log("contactId", contactId);
 
-    const deals = await getDealsFromContact(contactId);
+    // Get the hubspotToken
+    const { hubspotToken } = res.locals;
+
+    const deals = await getDealsFromContact(contactId, hubspotToken);
 
     // Send data
     res.send(deals);

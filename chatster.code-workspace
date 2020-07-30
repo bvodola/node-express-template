@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "path": "../chatster"
+    },
+    {
+      "path": "../chatster-client"
+    },
+    {
+      "path": "."
+    },
+    {
+      "path": "../zapmaster"
+    }
+  ],
+  "settings": {}
+}

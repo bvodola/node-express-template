@@ -1,12 +1,12 @@
 const express = require("express");
 const http = require("http");
-const https = require("http");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const session = require("cookie-session");
-const apolloServer = require("./apollo");
 const env = require("./env");
 const hubspotRoutes = require("./hubspot/routes");
+const userRoutes = require("./user/routes");
+const tokens = require("./auth/tokens");
 
 // ==============
 // Initial Config
@@ -14,13 +14,11 @@ const hubspotRoutes = require("./hubspot/routes");
 const app = express();
 const port = env.PORT || 3000;
 const server = http.createServer(app);
-apolloServer.applyMiddleware({ app });
-app.use("/graphql", () => {});
 
 // =====================
 // Keep Heroku App awake
 // =====================
-setInterval(function() {
+setInterval(function () {
   try {
     http.get(env.BACKEND_URL);
   } catch (err) {
@@ -38,18 +36,6 @@ app.use(redirectToHTTPS([/localhost:(\d{4})/], [/\/insecure/], 301));
 // CORS
 // ====
 app.use((req, res, next) => {
-  // const allowedOrigins = [
-  //   "chrome-extension://nallaonplkppkoblffghfkmebdbjlbji",
-  //   "chrome-extension://mkpomcaaododlneedilihiedcpgknikb"
-  // ];
-
-  // allowedOrigins.forEach(origin => {
-  //   res.header("Access-Control-Allow-Origin", origin);
-  // });
-
-  // if (app.settings.env !== "production")
-  //   res.header("Access-Control-Allow-Origin", "*");
-
   res.header("Access-Control-Allow-Origin", "*");
 
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -78,14 +64,26 @@ app.use("/auth", require("./auth/routes")(passport));
 // ===
 // API
 // ===
-app.use("/hubspot", hubspotRoutes);
+app.use(
+  "/hubspot",
+  tokens.validateMiddleware(),
+  tokens.checkHubspotIntegration,
+  hubspotRoutes
+);
+app.use(
+  "/users",
+  tokens.validateMiddleware({
+    bypass: (req) => req.path.split("/")[1] === "phone",
+  }),
+  userRoutes
+);
 
 // ===================
 // Production Settings
 // ===================
 if (app.settings.env === "production") {
   app.use(express.static("./client/build"));
-  app.get("*", function(req, res) {
+  app.get("*", function (req, res) {
     res.sendFile("./client/build/index.html", { root: __dirname });
   });
 }
@@ -93,7 +91,5 @@ if (app.settings.env === "production") {
 // ======
 // Server
 // ======
-server.listen(port, () =>
-  console.log(`Listening on port ${port}, ${apolloServer.graphqlPath}`)
-);
+server.listen(port, () => console.log(`Listening on port ${port}`));
 module.exports = app;

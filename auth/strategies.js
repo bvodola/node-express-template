@@ -9,13 +9,13 @@ var LocalStrategy = require("passport-local").Strategy;
 // Auth
 // ====
 
-module.exports = function(passport) {
-  passport.serializeUser(function(user, done) {
+module.exports = function (passport) {
+  passport.serializeUser(function (user, done) {
     done(null, user._id || user.id);
   });
 
-  passport.deserializeUser(function(id, done) {
-    User.findById(id, function(err, user) {
+  passport.deserializeUser(function (id, done) {
+    User.findById(id, function (err, user) {
       done(err, user);
     });
   });
@@ -26,10 +26,10 @@ module.exports = function(passport) {
   passport.use(
     new LocalStrategy(
       {
-        usernameField: "email"
+        usernameField: "email",
       },
-      function(email, password, done) {
-        Users.findOne({ email }, function(err, user) {
+      function (email, password, done) {
+        Users.findOne({ email }, function (err, user) {
           if (user) user = user.toObject();
           const userModel = new Users(user);
 
