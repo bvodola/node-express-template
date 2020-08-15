@@ -18,28 +18,32 @@ mongoosePromise.catch((reason) => {
 // =======
 // Schemas
 // =======
-const usersSchema = new Schema(
-  {
-    email: String,
-    name: String,
-    password: String,
-    phone: String,
-    token: String,
-    created: { type: Date, default: Date.now },
-    integrations: {
-      hubspot: {
-        active: Boolean,
-        user_id: Number,
-        hub_domain: String,
-        access_token: String,
-        refresh_token: String,
-        token_expiration_date: Date,
-      },
-    },
-  },
-  { strict: false }
-);
 
+/**
+ * User Schema
+ */
+const usersSchema = new Schema({
+  email: String,
+  name: String,
+  password: String,
+  phone: String,
+  token: String,
+  created: { type: Date, default: Date.now },
+});
+
+/**
+ * Posts Schema
+ */
+const postsSchema = new Schema({
+  title: String,
+  content: String,
+  author: Schema.ObjectId,
+  created: { type: Date, default: Date.now },
+});
+
+// ==============
+// Schema Methods
+// ==============
 usersSchema.methods.generateHash = function (password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
 };
@@ -48,7 +52,10 @@ usersSchema.methods.validPassword = function (password) {
   return bcrypt.compareSync(password, this.password);
 };
 
+// =======
+// Exports
+// =======
 const models = {};
 models.Users = mongoose.model("users", usersSchema);
-
+models.Posts = mongoose.model("posts", postsSchema);
 module.exports = models;

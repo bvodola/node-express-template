@@ -3,16 +3,20 @@ const http = require("http");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const session = require("cookie-session");
+
 const env = require("./env");
-const hubspotRoutes = require("./hubspot/routes");
-const userRoutes = require("./user/routes");
 const tokens = require("./auth/tokens");
+const models = require("./models");
+const crud = require("./crud");
+
+const userRoutes = require("./user/routes");
+const postRoutes = crud(models.Posts);
 
 // ==============
 // Initial Config
 // ==============
 const app = express();
-const port = env.PORT || 3000;
+const port = env.PORT || 2000;
 const server = http.createServer(app);
 
 // =====================
@@ -64,19 +68,8 @@ app.use("/auth", require("./auth/routes")(passport));
 // ===
 // API
 // ===
-app.use(
-  "/hubspot",
-  tokens.validateMiddleware(),
-  tokens.checkHubspotIntegration,
-  hubspotRoutes
-);
-app.use(
-  "/users",
-  tokens.validateMiddleware({
-    bypass: (req) => req.path.split("/")[1] === "phone",
-  }),
-  userRoutes
-);
+app.use("/users", tokens.validateMiddleware(), userRoutes);
+app.use("/posts", postRoutes);
 
 // ===================
 // Production Settings
@@ -91,5 +84,9 @@ if (app.settings.env === "production") {
 // ======
 // Server
 // ======
-server.listen(port, () => console.log(`Listening on port ${port}`));
-module.exports = app;
+try {
+  server.listen(port, () => console.log(`Listening on port ${port}`));
+  module.exports = app;
+} catch (err) {
+  console.error(err);
+}

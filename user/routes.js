@@ -16,8 +16,9 @@ router.get("/current", async (req, res) => {
 /**
  * Crud Routes
  */
-const userRoutes = crud(models.Users, router, {
+const userRoutes = crud(models.Users, {
   searchFields: ["name", "email", "phone"],
+  router,
 });
 
 module.exports = userRoutes;
